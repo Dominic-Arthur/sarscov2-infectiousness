@@ -206,7 +206,7 @@ class TOIT(InfectiousnessProfile):
         self._x_grid: Optional[np.ndarray] = None
         self._pdf_grid: Optional[np.ndarray] = None
 
-    # Molecular clock utilities (optional)
+    # Molecular clock utilities
     def sample_clock_rate_per_day(self, size: Union[int, Tuple[int, ...]] = 1) -> np.ndarray:
         """
         Returns substitution rate per day (sites/day).
@@ -249,6 +249,7 @@ class TOIT(InfectiousnessProfile):
         f_P = self.dist_P.pdf(yP)  # shape (Ny,)
 
         # Build matrix F_I(x - yP) for all x in x_valid
+        # For negative arguments, gamma.cdf returns 0 as desired.
         X = x_valid[:, None]  # (Nx, 1)
         Y = yP[None, :]       # (1, Ny)
         FI = self.dist_I.cdf(X - Y)  # (Nx, Ny)
@@ -273,10 +274,14 @@ class TOIT(InfectiousnessProfile):
             pdf_vals = self.pdf(x)
             # Guard against zero/negative or NaN pdf
             pdf_vals = np.clip(pdf_vals, a_min=0.0, a_max=np.inf)
-            Z = np.trapz(pdf_vals, x)
-            if not np.isfinite(Z) or Z <= 0.0:
+            s = pdf_vals.sum()
+            if not np.isfinite(s) or s <= 0.0:
                 # Fallback to a near-uniform distribution if pdf degenerates
-                pdf_vals = np.ones_like_vals
+                pdf_vals = np.ones_like(x) / len(x)
+            else:
+                pdf_vals = pdf_vals / s
+            self._x_grid = x
+            self._pdf_grid = pdf_vals
         return self._x_grid, self._pdf_grid
 
     def rvs(self, size: Union[int, Tuple[int, ...]] = (1,)) -> np.ndarray:
