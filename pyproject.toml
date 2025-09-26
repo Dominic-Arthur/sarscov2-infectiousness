@@ -9,7 +9,7 @@ description = "Variable infectiousness (E/P/I) model for SARS-CoV-2 as in Hart e
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
-authors = [{ name = "Your Name", email = "you@example.org" }]
+authors = [{ name = "Dominic Arthur", email = "arthurdominic04@gmail.com" }]
 keywords = ["epidemiology", "COVID-19", "SARS-CoV-2", "infectiousness", "TOST", "generation time"]
 classifiers = [
   "Programming Language :: Python :: 3",

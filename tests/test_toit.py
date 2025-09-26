@@ -5,7 +5,7 @@ def test_toit_normalizes():
     p = InfectiousnessParams()
     d = TOIT(params=p)
     y = np.linspace(0, 30, 20001)
-    area = np.trapz(d.pdf(y), y)
+    area = np.trapezoid(d.pdf(y), y)
     assert 0.98 <= area <= 1.02
 
 def test_generation_time():

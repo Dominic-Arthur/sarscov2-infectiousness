@@ -258,7 +258,7 @@ class TOIT(InfectiousnessProfile):
         integrand = np.where(Y <= X, integrand, 0.0)
 
         # Integrate over yP (axis=1)
-        integral = np.trapz(integrand, yP, axis=1)  # (Nx,)
+        integral = np.trapezoid(integrand, yP, axis=1)  # (Nx,)
 
         p = self.params
         out[mask] = p.C * (p.alpha * (1.0 - self.dist_P.cdf(x_valid)) + integral)
@@ -277,6 +277,63 @@ class TOIT(InfectiousnessProfile):
             if not np.isfinite(Z) or Z <= 0.0:
                 # Fallback to a near-uniform distribution if pdf degenerates
                 pdf_vals = np.ones_like_vals
+        return self._x_grid, self._pdf_grid
+
+    def rvs(self, size: Union[int, Tuple[int, ...]] = (1,)) -> np.ndarray:
+        if isinstance(size, int):
+            size = (size,)
+        x, probs = self._ensure_grid()
+        return self.rng.choice(x, size=size, p=probs)
+
+
+class TOST(InfectiousnessProfile):
+    """
+    Time from Symptom Onset to Transmission (x).
+
+    Piecewise pdf from [1], Appendix (“Our mechanistic model”):
+      - x < 0:  f_tost(x) = alpha * C * (1 - F_P(-x))
+      - x >= 0: f_tost(x) = C * (1 - F_I(x))
+
+    Sampling is done via discretized inverse transform on [a, b].
+    """
+
+    def __init__(
+        self,
+        a: float = -10.0,
+        b: float = 10.0,
+        params: Optional[InfectiousnessParams] = None,
+        rng: Optional[Generator] = None,
+        rng_seed: Optional[int] = 12345,
+        x_grid_points: int = 2048,
+    ):
+        super().__init__(a=a, b=b, params=params, rng=rng, rng_seed=rng_seed)
+        self.x_grid_points = int(x_grid_points)
+        self._x_grid: Optional[np.ndarray] = None
+        self._pdf_grid: Optional[np.ndarray] = None
+
+    def pdf(self, x: ArrayLike) -> np.ndarray:
+        x_arr = np.atleast_1d(np.asarray(x, dtype=float))
+        p = self.params
+        # Piecewise: x<0 uses F_P; x>=0 uses F_I
+        pdf_vals = np.where(
+            x_arr < 0.0,
+            p.alpha * p.C * (1.0 - self.dist_P.cdf(-x_arr)),
+            p.C * (1.0 - self.dist_I.cdf(x_arr)),
+        )
+        return np.clip(pdf_vals, a_min=0.0, a_max=np.inf)
+
+    def _ensure_grid(self) -> Tuple[np.ndarray, np.ndarray]:
+        if self._x_grid is None or self._pdf_grid is None:
+            x = np.linspace(self.a, self.b, num=max(2, self.x_grid_points))
+            pdf_vals = self.pdf(x)
+            pdf_vals = np.clip(pdf_vals, a_min=0.0, a_max=np.inf)
+            Z = np.trapz(pdf_vals, x)
+            if not np.isfinite(Z) or Z <= 0.0:
+                pdf_vals = np.ones_like(x) / len(x)
+            else:
+                pdf_vals = pdf_vals / Z
+            self._x_grid = x
+            self._pdf_grid = pdf_vals
         return self._x_grid, self._pdf_grid
 
     def rvs(self, size: Union[int, Tuple[int, ...]] = (1,)) -> np.ndarray:
