@@ -332,11 +332,11 @@ class TOST(InfectiousnessProfile):
             x = np.linspace(self.a, self.b, num=max(2, self.x_grid_points))
             pdf_vals = self.pdf(x)
             pdf_vals = np.clip(pdf_vals, a_min=0.0, a_max=np.inf)
-            Z = np.trapz(pdf_vals, x)
-            if not np.isfinite(Z) or Z <= 0.0:
+            s = pdf_vals.sum()
+            if not np.isfinite(s) or s <= 0.0:
                 pdf_vals = np.ones_like(x) / len(x)
             else:
-                pdf_vals = pdf_vals / Z
+                pdf_vals = pdf_vals / s
             self._x_grid = x
             self._pdf_grid = pdf_vals
         return self._x_grid, self._pdf_grid
