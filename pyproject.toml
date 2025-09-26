@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sarscov2-infectiousness"
+version = "0.1.0"
+description = "Variable infectiousness (E/P/I) model for SARS-CoV-2 as in Hart et al. (2021)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Your Name", email = "you@example.org" }]
+keywords = ["epidemiology", "COVID-19", "SARS-CoV-2", "infectiousness", "TOST", "generation time"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+  "numpy>=1.23",
+  "scipy>=1.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/sarscov2-infectiousness"
+Issues = "https://github.com/your-org/sarscov2-infectiousness/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.5", "black>=24.3.0", "mypy>=1.6"]
+docs = ["sphinx>=7", "sphinx-autodoc-typehints>=2.0", "sphinxcontrib-napoleon>=0.7"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["sarscov2_infectiousness*"]
+
+[tool.black]
+target-version = ["py39"]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = ["E", "F", "I", "N", "UP", "B"]
