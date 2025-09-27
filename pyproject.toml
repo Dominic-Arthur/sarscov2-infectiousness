@@ -22,10 +22,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-org/sarscov2-infectiousness"
-Issues = "https://github.com/your-org/sarscov2-infectiousness/issues"
+Homepage = "https://github.com/ydnkka/sarscov2-infectiousness"
+Issues = "https://github.com/ydnkka/sarscov2-infectiousness/issues"
 
-[project.optional-dependencies]
+\1linkage = [\"numba>=0.59\"]
 dev = ["pytest>=7", "ruff>=0.5", "black>=24.3.0", "mypy>=1.6"]
 docs = ["sphinx>=7", "sphinx-autodoc-typehints>=2.0", "sphinxcontrib-napoleon>=0.7"]
 

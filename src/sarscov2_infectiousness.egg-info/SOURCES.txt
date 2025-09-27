@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+src/sarscov2_infectiousness/__init__.py
+src/sarscov2_infectiousness/py.typed
+src/sarscov2_infectiousness/variable_model.py
+src/sarscov2_infectiousness.egg-info/PKG-INFO
+src/sarscov2_infectiousness.egg-info/SOURCES.txt
+src/sarscov2_infectiousness.egg-info/dependency_links.txt
+src/sarscov2_infectiousness.egg-info/requires.txt
+src/sarscov2_infectiousness.egg-info/top_level.txt
+tests/test_toit.py
+tests/test_tost.py

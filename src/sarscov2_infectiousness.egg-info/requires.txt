@@ -1,0 +1,13 @@
+numpy>=1.23
+scipy>=1.9
+
+[dev]
+pytest>=7
+ruff>=0.5
+black>=24.3.0
+mypy>=1.6
+
+[docs]
+sphinx>=7
+sphinx-autodoc-typehints>=2.0
+sphinxcontrib-napoleon>=0.7

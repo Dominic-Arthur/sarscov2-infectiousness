@@ -1,11 +1,18 @@
 """
-sarscov2_infectiousness
-
-Variable infectiousness (E/P/I) model for SARS-CoV-2 following:
-Hart WS, Maini PK, Thompson RN (2021), eLife 10:e65534.
+sarscov2_infectiousness: infectiousness models and related tools.
+Keep top-level imports light to avoid hard optional dependencies.
 """
 
-from .variable_model import InfectiousnessParams, TOST, TOIT, presymptomatic_fraction
+from .infectiousness import InfectiousnessParams, TOST, TOIT
 
-__all__ = ["InfectiousnessParams", "TOST", "TOIT", "presymptomatic_fraction"]
+# Export helper if present
+try:
+    from .infectiousness import presymptomatic_fraction  # type: ignore
+except Exception:  # pragma: no cover
+    presymptomatic_fraction = None  # type: ignore
+
+__all__ = ["InfectiousnessParams", "TOST", "TOIT"]
+if presymptomatic_fraction is not None:
+    __all__.append("presymptomatic_fraction")
+
 __version__ = "0.1.0"
